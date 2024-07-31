@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-// #include <vector>
+#include <regex>
 #include <map>
 
 class BitcoinExchange

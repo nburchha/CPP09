@@ -9,8 +9,28 @@ static std::string trim(const std::string& str)
 	return str.substr(first, last - first + 1);
 }
 
+static bool isValidDate(const std::string& date)
+{
+	std::regex dateFormat("^\\d{4}-\\d{2}-\\d{2}$");
+	if (!std::regex_match(date, dateFormat))
+		return false;
+
+	int year, month, day;
+	char delimiter;
+
+	std::istringstream dateStream(date);
+	dateStream >> year >> delimiter >> month >> delimiter >> day;
+	if (month < 1 || month > 12 || day < 1 || day > 31)
+		return false;
+	return true;
+}
+
 void BitcoinExchange::printPrice(const std::string& date, const float value)
 {
+	if (!isValidDate(date)) {
+		std::cerr << "Error: invalid date: " << date << std::endl;
+		return ;
+	}
 	std::map<std::string, float>::iterator it = _btcPrices.lower_bound(date);
 	if (it == _btcPrices.end() || it->first != date) {
 		if (it == _btcPrices.begin()) {
@@ -30,20 +50,20 @@ void BitcoinExchange::printPrice(const std::string& date, const float value)
 void BitcoinExchange::processInput(const std::string filename)
 {
 	std::ifstream file(filename);
-	if (!file.is_open())
+	if (file.fail())
 		throw std::runtime_error("Error: couldn't open file!");
 	
 	std::string line;
 	std::getline(file, line);
 	if (line != "date | value")
-		throw std::runtime_error("Database header invalid!\n");
+		throw std::runtime_error("Input file header invalid!");
 	while (std::getline(file, line))
 	{
 		std::istringstream iss(line);
 		std::string date, valueStr;
 
 		if (!std::getline(iss, date, '|') || !std::getline(iss, valueStr))
-			std::cerr << "Error: incorrect number of cells!" << std::endl;
+			std::cerr << "Error: bad input => " << line << std::endl;
 		date = trim(date);
 		valueStr = trim(valueStr);
 		try {
@@ -66,13 +86,13 @@ void BitcoinExchange::getPrices()
 {
 	std::ifstream file("./data.csv");
 
-	if (!file.is_open())
+	if (file.fail())
 		throw std::runtime_error("Error: couldn't open database!");
 	std::string line;
 	std::getline(file, line);
 	if (line != "date,exchange_rate") {
 		file.close();
-		throw std::runtime_error("Error: Database header invalid!\n");
+		throw std::runtime_error("Error: Database header invalid!");
 	}
 	while (std::getline(file, line))
 	{
@@ -80,7 +100,7 @@ void BitcoinExchange::getPrices()
 		std::string date, valueStr;
 		if (!std::getline(iss, date, ',') || !std::getline(iss, valueStr)) {
 			file.close();
-			throw std::runtime_error("Error: incorrect number of cells in Database!");
+			throw std::runtime_error("Error: not enough cells in database");
 		}
 		try {
 			float value = std::stof(valueStr);
