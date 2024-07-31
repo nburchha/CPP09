@@ -3,6 +3,7 @@ program
 .vscode
 *.json
 .DS_Store
-btc
 *.csv
 *.txt
+btc
+RPN
