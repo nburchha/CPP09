@@ -31,23 +31,24 @@ void sortByLargerValue(std::vector<std::pair<typename C::value_type, typename C:
 				std::swap(pairs[i], pairs[j]);
 }
 
-std::vector<int> buildJacobInsertionSequence(int size)
+std::vector<int> buildJacobsthalSequence(int size)
 {
 	std::vector<int> sequence;
 	if (size == 0)
 		return sequence;
+	sequence.push_back(0);
+	if (size == 1)
+		return sequence;
+
 	sequence.push_back(1);
-	int j0 = 0;
-	int j1 = 1;
-	for (int i = 2; i <= size; ++i)
+	for (int i = 2; i < size; ++i)
 	{
-		int next = j1 + 2 * j0;
+		int next = sequence[i - 1] + 2 * sequence[i - 2];
 		sequence.push_back(next);
-		j0 = j1;
-		j1 = next;
 	}
 	return sequence;
 }
+
 
 
 template <typename C>
@@ -60,6 +61,7 @@ void insertPendElements(C& S, const std::vector<typename C::value_type>& pend)
 		S.insert(it, value);
 	}
 }
+
 
 
 template<typename C>
@@ -75,7 +77,7 @@ C createSortedS(const std::vector<std::pair<typename C::value_type, typename C::
 		S.insert(S.begin(), pend[0]);
 		pend.erase(pend.begin());
 	}
-	std::vector<int> insertionSequence = buildJacobInsertionSequence(pend.size());
+	std::vector<int> insertionSequence = buildJacobsthalSequence(pend.size());
 	insertPendElements(S, pend);
 	if (straggler != typename C::value_type()) {
 		typename C::iterator it = std::lower_bound(S.begin(), S.end(), straggler);
