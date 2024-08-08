@@ -1,11 +1,11 @@
 #pragma once
 
-#include <algorithm>
-#include <fstream>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sstream>
-#include <regex>
+#include <cstring>
+#include <cstdlib>
 #include <map>
 
 class BitcoinExchange
@@ -19,7 +19,7 @@ class BitcoinExchange
 		BitcoinExchange(const BitcoinExchange& other);
 		BitcoinExchange& operator=(const BitcoinExchange& copy);
 	public:
-		void processInput(const std::string filename);
+		void processInput(const std::string& filename);
 		BitcoinExchange();
 		~BitcoinExchange();
 };

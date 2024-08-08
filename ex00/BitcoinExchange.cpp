@@ -11,9 +11,18 @@ static std::string trim(const std::string& str)
 
 static bool isValidDate(const std::string& date)
 {
-	std::regex dateFormat("^\\d{4}-\\d{2}-\\d{2}$");
-	if (!std::regex_match(date, dateFormat))
+	if (std::strlen(date.c_str()) != 10)
 		return false;
+	for (int i = 0; i < 10; i++)
+	{
+		if (i == 4 || i == 7)
+		{
+			if (date[i] != '-')
+				return false;
+		}
+		else if (!std::isdigit(date[i]))
+			return false;
+	}
 
 	int year, month, day;
 	char delimiter;
@@ -47,9 +56,9 @@ void BitcoinExchange::printPrice(const std::string& date, const float value)
 }
 
 
-void BitcoinExchange::processInput(const std::string filename)
+void BitcoinExchange::processInput(const std::string& filename)
 {
-	std::ifstream file(filename);
+	std::ifstream file(filename.c_str());
 	if (file.fail())
 		throw std::runtime_error("Error: couldn't open file!");
 	
@@ -67,7 +76,8 @@ void BitcoinExchange::processInput(const std::string filename)
 		date = trim(date);
 		valueStr = trim(valueStr);
 		try {
-			float value = std::stof(valueStr);
+			char *end;
+			float value = std::strtof(valueStr.c_str(), &end);
 			if (value < 0)
 				throw std::out_of_range("Error: not a positive number!");
 			else if (value > 1000)
@@ -103,7 +113,8 @@ void BitcoinExchange::getPrices()
 			throw std::runtime_error("Error: not enough cells in database");
 		}
 		try {
-			float value = std::stof(valueStr);
+			char *end;
+			float value = std::strtof(valueStr.c_str(), &end);
 			_btcPrices[date] = value;
 		} catch (const std::invalid_argument& e) {
 			std::cerr << "Error: invalid value '" << valueStr << "' for date " << date << std::endl;
