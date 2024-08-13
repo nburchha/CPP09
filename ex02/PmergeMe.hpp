@@ -17,6 +17,7 @@ public:
 	bool parseInput(const std::vector<std::string> &inputs);
 	void sort();
 private:
+	// unsigned int _level;
 	std::vector<int> _vector;
 	std::deque<int> _dq;
 	PmergeMe(const PmergeMe &other);
