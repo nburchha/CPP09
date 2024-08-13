@@ -65,7 +65,7 @@ void BitcoinExchange::processInput(const std::string& filename)
 	std::string line;
 	std::getline(file, line);
 	if (line != "date | value")
-		throw std::runtime_error("Input file header invalid!");
+		throw std::runtime_error("Error: Input file header invalid!");
 	while (std::getline(file, line))
 	{
 		std::istringstream iss(line);
@@ -76,6 +76,9 @@ void BitcoinExchange::processInput(const std::string& filename)
 		date = trim(date);
 		valueStr = trim(valueStr);
 		try {
+			for (size_t i = 0; i < valueStr.size(); ++i)
+				if (!isdigit(valueStr[i]) && valueStr[i] != '.')
+					throw std::runtime_error("Error: Not a valid value!");
 			char *end;
 			float value = std::strtof(valueStr.c_str(), &end);
 			if (value < 0)
@@ -85,7 +88,7 @@ void BitcoinExchange::processInput(const std::string& filename)
 			printPrice(date, value);
 		} catch (const std::invalid_argument& e) {
 			std::cerr << "Error: invalid value in file!" << std::endl;
-		} catch (const std::out_of_range& e) {
+		} catch (const std::exception& e) {
 			std::cerr << e.what() << std::endl;
 		}
 	}
