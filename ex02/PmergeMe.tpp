@@ -64,20 +64,25 @@ std::vector<int> buildJacobsthalSequence(int k)
 }
 
 template <typename C>
-typename C::iterator binSearch(C& S, int size, typename C::iterator it1, int target)
+typename C::iterator binSearch(C& arr, int size, typename C::iterator it1, int target)
 {
-	auto left = S.begin();
+	auto left = arr.begin();
 	auto right = it1 - size;
 	auto mid = left + (std::distance(left, right) / size) / 2 * size;
-	while (left != right && left + size != right)
+	while (!(left == right || left + size == right))
 	{
-		if (*mid == target)
-			return mid;
-		if (*mid < target)
-			left = mid;
-		else
+		if (*mid > target)
+		{
 			right = mid;
-		mid = left + (std::distance(left, right) / size) / 2 * size;
+			mid = left + (std::distance(left, right) / size) / 2 * size;
+		}
+		else if (*mid < target)
+		{
+			left = mid;
+			mid = left + (std::distance(left, right) / size) / 2 * size;
+		}
+		else
+			return mid;
 	}
 	if (*right < target)
 		return right + size;
@@ -104,7 +109,7 @@ void insertionSort(C& arr, int size, C& S)
 	int idk = 0;
 	int tab = arr.size() / (2 * size);
 	std::vector<int> insertionSequence = buildJacobsthalSequence(13);
-	for (int i = 1; i < tab; ++i)
+	for (int i = 1; i < tab; i++)
 	{
 		if (idk == 0 || insertionSequence[idk] > insertionSequence[idk - 1])
 			sortSize *= 2;
@@ -112,7 +117,7 @@ void insertionSort(C& arr, int size, C& S)
 			sortSize = S.size() / size;
 		while (insertionSequence[idk] >= tab)
 			++idk;
-		it2 = arr.begin() + size + 2 * size * insertionSequence[idk];
+		it2 = arr.begin() + size + 2 * size * insertionSequence[idk++];
 		it1 = binSearch(S, size, S.begin() + (sortSize - 1) * size, *it2);
 		insertRange(S, it1, it2, size);
 	}
@@ -122,12 +127,11 @@ void insertionSort(C& arr, int size, C& S)
 		it1 = binSearch(S, size, S.end(), *it2);
 		insertRange(S, it1, it2, size);
 	}
-	size /= 2;
 	it1 = arr.end() - (arr.size() - S.size());
 	S.insert(S.end(), it1, arr.end());
 	arr = S;
 	
-	if (size >= 1)
+	if (size / 2 >= 1)
 	{
 		std::cout << "end of insertion size: " << size << std::endl;
 		insertionSort(arr, size / 2, S);
@@ -138,10 +142,11 @@ template<typename C>
 double mergeInsertionSort(C& arr)
 {
 	auto start = std::chrono::high_resolution_clock::now();
-	int size = merge<C>(arr, 1) / 2;
+	int size = merge<C>(arr, 1);
 	std::cout << "size: " << size << std::endl;
 	C S;
-	insertionSort<C>(arr, size, S);
+	if (size >= 1)
+		insertionSort<C>(arr, size, S);
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double, std::milli> duration = end - start;
 	return duration.count();
