@@ -1,6 +1,6 @@
 CC = c++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = btc
+CPPFLAGS = -Wall -Wextra -Werror -std=c++11
+NAME = PmergeMe
 
 SRCS = main.cpp PmergeMe.cpp
 OBJS = $(SRCS:.cpp=.o)

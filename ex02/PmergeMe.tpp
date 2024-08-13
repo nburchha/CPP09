@@ -1,3 +1,5 @@
+#include <chrono>
+
 template<typename C>
 void handleStraggler(C& arr, typename C::value_type& straggler)
 {
@@ -39,7 +41,6 @@ std::vector<int> buildJacobsthalSequence(int size)
 	sequence.push_back(0);
 	if (size == 1)
 		return sequence;
-
 	sequence.push_back(1);
 	for (int i = 2; i < size; ++i)
 	{
@@ -87,8 +88,9 @@ C createSortedS(const std::vector<std::pair<typename C::value_type, typename C::
 }
 
 template<typename C>
-void mergeInsertionSort(C& arr)
+double mergeInsertionSort(C& arr)
 {
+	auto start = std::chrono::high_resolution_clock::now();
 	typename C::value_type straggler;
 	bool hasStraggler = arr.size() % 2 != 0;
 
@@ -99,5 +101,8 @@ void mergeInsertionSort(C& arr)
 	sortByLargerValue<C>(pairs);
 	C sortedArr = createSortedS<C>(pairs, hasStraggler ? straggler : typename C::value_type());
 	arr = sortedArr;
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> duration = end - start;
+	return duration.count();
 }
 

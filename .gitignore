@@ -7,3 +7,5 @@ program
 *.txt
 btc
 RPN
+*.ini
+PmergeMe
