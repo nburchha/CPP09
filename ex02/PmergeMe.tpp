@@ -35,8 +35,9 @@ int merge(C& arr, unsigned int size)
 	for (auto iterator : arr)
 		std::cout << iterator << " ";
 	std::cout << std::endl;
-	if (4 * size <= arr.size())
-		size = merge(arr, 2 * size);
+	size *= 2;
+	if (2 * size <= arr.size())
+		size = merge(arr, size);
 	return size;
 }
 
@@ -60,6 +61,13 @@ std::vector<int> buildJacobsthalSequence(int k)
 			sequence.push_back(curr--);
 		prev = prev + g;
 	}
+	std::cout << "Jacobsthal sequence: ";
+	for (size_t i = 0; i < sequence.size(); i++)
+	{
+		std::cout << sequence[i] << " ";
+		if (i > 10) break;
+	}
+	std::cout << std::endl;
 	return sequence;
 }
 
