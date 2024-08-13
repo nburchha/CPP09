@@ -74,5 +74,7 @@ int RPN::calculate(const std::string& input)
 		else
 			throw std::runtime_error("Not a valid calculation!");
 	}
+	if (_stack.size() != 1)
+		throw std::runtime_error("Not a valid calculation!");
 	return _stack.top();
 }
