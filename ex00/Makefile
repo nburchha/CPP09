@@ -1,5 +1,5 @@
 CC = c++
-CPPFLAGS = -Wall -Wextra -Werror
+CPPFLAGS = -Wall -Wextra -Werror -std=c++17
 NAME = btc
 
 SRCS = main.cpp BitcoinExchange.cpp
