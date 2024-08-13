@@ -50,12 +50,12 @@ void PmergeMe::sort()
 	}
 	std::cout << std::endl;
 
-	double vectorDuration = mergeInsertionSort(_vector), dqDuration = mergeInsertionSort(_dq);
+	double vectorDuration = mergeInsertionSort(_vector);//, dqDuration = mergeInsertionSort(_dq);
 	std::cout << "After: ";
 	for (size_t i = 0; i < _vector.size(); ++i) {
 		std::cout << _vector[i] << " ";
 	}
 	std::cout << std::endl;
 	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector: " << vectorDuration << " ms" << std::endl;
-	std::cout << "Time to process a range of " << _dq.size() << " elements with std::deque: " << dqDuration << " ms" << std::endl;
+	// std::cout << "Time to process a range of " << _dq.size() << " elements with std::deque: " << dqDuration << " ms" << std::endl;
 }
