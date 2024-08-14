@@ -1,9 +1,19 @@
 #include <chrono>
 
 template <typename C>
+void printRange(typename C::iterator it1, typename C::iterator it2, std::string message)
+{
+	std::cout << message << ": ";
+	while (it1 != it2)
+		std::cout << *it1++ << " ";
+	std::cout << std::endl;
+}
+
+template <typename C>
 void swapRange(C &arr, typename C::iterator b, typename C::iterator c, int size)
 {
-	auto d = c + size;
+	
+	auto d = std::next(c, size);
 	std::vector<int> ins(c, d);
 	arr.erase(c, d);
 	arr.insert(b, ins.begin(), ins.end());
@@ -12,7 +22,7 @@ void swapRange(C &arr, typename C::iterator b, typename C::iterator c, int size)
 template <typename C>
 void insertRange(C& a, typename C::iterator it1, typename C::iterator it2, int size)
 {
-	auto it3 = it2 + size;
+	auto it3 = std::next(it2, size);
 	std::vector<typename C::value_type> ins(it2, it3);
 	a.insert(it1, ins.begin(), ins.end());
 }
@@ -21,13 +31,13 @@ template <typename C>
 int merge(C& arr, unsigned int size)
 {
 	auto it1 = arr.begin();
-	auto it2 = it1 + size;
+	auto it2 = std::next(it1, size);
 	if (*it1 < *it2)
 		swapRange(arr, it1, it2, size);
 	for (size_t i = 1; i < arr.size() / (2 * size); ++i)
 	{
-		it1 += 2 * size;
-		it2 += 2 * size;
+		it1 = std::next(it1, 2 * size);
+		it2 = std::next(it2, 2 * size);
 		if (*it1 < *it2)
 			swapRange(arr, it1, it2, size);
 	}
@@ -62,27 +72,28 @@ template <typename C>
 typename C::iterator binSearch(C& arr, int size, typename C::iterator it1, int target)
 {
 	auto left = arr.begin();
-	auto right = it1 - size;
-	auto mid = left + (std::distance(left, right) / size) / 2 * size;
-	while (!(left == right || left + size == right))
+	auto right = std::prev(it1, size);
+	auto mid = std::next(left, (std::distance(left, right) / size) / 2 * size);
+	while (!(left == right || std::next(left, size) == right))
 	{
 		if (*mid > target)
 		{
 			right = mid;
-			mid = left + (std::distance(left, right) / size) / 2 * size;
+			mid = std::next(left, (std::distance(left, right) / size) / 2 * size);
 		}
 		else if (*mid < target)
 		{
 			left = mid;
 			mid = left + (std::distance(left, right) / size) / 2 * size;
+			mid = std::next(left, (std::distance(left, right) / size) / 2 * size);
 		}
 		else
 			return mid;
 	}
 	if (*right < target)
-		return right + size;
+		return std::next(right, size);
 	if (*mid < target)
-		return mid + size;
+		return std::next(mid, size);
 	return mid;
 }
 
@@ -91,11 +102,11 @@ void insertionSort(C& arr, int size, C& S)
 {
 	S.clear();
 	auto it1 = arr.begin();
-	auto it2 = it1 + size;
+	auto it2 = std::next(it1, size);
 	while (distance(it1, arr.end()) >= 2 * size)
 	{
 		insertRange(S, S.end(), it1, size);
-		it1 += 2 * size;
+		it1 = std::next(it1, 2 * size);
 	}
 	insertRange(S, S.begin(), it2, size);
 	unsigned int sortSize = 2;
@@ -110,17 +121,17 @@ void insertionSort(C& arr, int size, C& S)
 			sortSize = S.size() / size;
 		while (insertionSequence[idk] >= tab)
 			++idk;
-		it2 = arr.begin() + size + 2 * size * insertionSequence[idk++];
+		it2 = std::next(arr.begin(), size + 2 * size * insertionSequence[idk++]);
 		it1 = binSearch(S, size, S.begin() + (sortSize - 1) * size, *it2);
 		insertRange(S, it1, it2, size);
 	}
 	if ((arr.size() / size) % 2)
 	{
-		it2 = arr.begin() + size * 2 * tab;
+		it2 = std::next(arr.begin(), size * 2 * tab);
 		it1 = binSearch(S, size, S.end(), *it2);
 		insertRange(S, it1, it2, size);
 	}
-	it1 = arr.end() - (arr.size() - S.size());
+	it1 = std::prev(arr.end(), arr.size() - S.size());
 	S.insert(S.end(), it1, arr.end());
 	arr = S;
 	
