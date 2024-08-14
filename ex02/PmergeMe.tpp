@@ -3,25 +3,33 @@
 template <typename C>
 void printRange(typename C::iterator it1, typename C::iterator it2, std::string message)
 {
-	std::cout << message << ": ";
-	while (it1 != it2)
-		std::cout << *it1++ << " ";
+	std::cout << message << " ";
+	for (auto it = it1; it != it2; ++it)
+		std::cout << *it << " ";
 	std::cout << std::endl;
 }
 
 template <typename C>
 void swapRange(C &arr, typename C::iterator b, typename C::iterator c, int size)
 {
-	
+	printRange<C>(b, c, "about to be swapped0:");
+	printRange<C>(c, c + size, "about to be swapped1:");
 	auto d = std::next(c, size);
 	std::vector<int> ins(c, d);
+	auto c_pos = std::distance(arr.begin(), c);
+	auto b_pos = std::distance(arr.begin(), b);
 	arr.erase(c, d);
+	b = std::next(arr.begin(), b_pos);
+	c = std::next(arr.begin(), c_pos);
 	arr.insert(b, ins.begin(), ins.end());
 }
 
 template <typename C>
 void insertRange(C& a, typename C::iterator it1, typename C::iterator it2, int size)
 {
+	printRange<C>(a.begin(), a.end(), "a:");
+	printRange<C>(it2, it2 + size, "range about to be inserted:");
+	it1 == a.end() ? (void)(std::cout << "inserted at the end off the range" << std::endl) : printRange<C>(it1, a.end(), "in front of this range:");
 	auto it3 = std::next(it2, size);
 	std::vector<typename C::value_type> ins(it2, it3);
 	a.insert(it1, ins.begin(), ins.end());
@@ -74,6 +82,10 @@ typename C::iterator binSearch(C& arr, int size, typename C::iterator it1, int t
 	auto left = arr.begin();
 	auto right = std::prev(it1, size);
 	auto mid = std::next(left, (std::distance(left, right) / size) / 2 * size);
+	std::cout << "target: " << target << std::endl;
+	std::cout << "left: " << *left << ", right: " << *right << ", mid: " << *mid << std::endl;
+	std::cout << "iterator: " << *it1 << std::endl;
+	printRange<C>(arr.begin(), arr.end(), "arr:");
 	while (!(left == right || std::next(left, size) == right))
 	{
 		if (*mid > target)
@@ -145,6 +157,7 @@ double mergeInsertionSort(C& arr)
 	auto start = std::chrono::high_resolution_clock::now();
 	int size = merge<C>(arr, 1);
 	C S;
+	printRange<C>(arr.begin(), arr.end(), "arr after merge");
 	if (size >= 1)
 		insertionSort<C>(arr, size, S);
 	auto end = std::chrono::high_resolution_clock::now();
@@ -152,6 +165,6 @@ double mergeInsertionSort(C& arr)
 	for (size_t i = 1; i < arr.size(); ++i)
 		if (arr[i] < arr[i - 1])
 			throw std::runtime_error("Not sorted!");
-	std::cout << "Sorted!";
+	std::cout << "Sorted!" << std::endl;
 	return duration.count();
 }
