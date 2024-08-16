@@ -19,9 +19,9 @@ void swapRange(C &arr, typename C::iterator b, typename C::iterator c, int size)
 	auto c_pos = std::distance(arr.begin(), c);
 	auto b_pos = std::distance(arr.begin(), b);
 	arr.erase(c, d);
-	b = std::next(arr.begin(), b_pos);
-	c = std::next(arr.begin(), c_pos);
 	arr.insert(b, ins.begin(), ins.end());
+	b = std::next(arr.begin(), b_pos);
+	c = std::next(arr.begin(), c_pos + size);
 }
 
 template <typename C>

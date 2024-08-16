@@ -45,17 +45,26 @@ bool PmergeMe::parseInput(const std::vector<std::string> &inputs)
 void PmergeMe::sort()
 {
 	std::cout << "Before: ";
-	for (size_t i = 0; i < _vector.size(); ++i) {
+	for (size_t i = 0; i < _vector.size() && i < 10; ++i) {
 		std::cout << _vector[i] << " ";
 	}
-	std::cout << std::endl;
-
-	double vectorDuration = mergeInsertionSort(_vector);//, dqDuration = mergeInsertionSort(_dq);
+	std::cout << "[...]" << std::endl;
+	double dqDuration = 0;
+	// double vectorDuration = 0;
+	try {
+		dqDuration = mergeInsertionSort(_dq);
+		// vectorDuration = mergeInsertionSort(_vector);
+	} catch (const std::exception &e) {
+		std::cerr << e.what() << std::endl;
+	}
 	std::cout << "After: ";
-	for (size_t i = 0; i < _vector.size(); ++i) {
-		std::cout << _vector[i] << " ";
+	for (size_t i = 0; i < _dq.size() && i < 10; ++i) {
+		std::cout << _dq[i] << " ";
 	}
-	std::cout << std::endl;
-	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector: " << vectorDuration << " ms" << std::endl;
-	// std::cout << "Time to process a range of " << _dq.size() << " elements with std::deque: " << dqDuration << " ms" << std::endl;
+	// for (size_t i = 0; i < _vector.size() && i < 10; ++i) {
+		// std::cout << _vector[i] << " ";
+	// }
+	std::cout << "[...]" << std::endl;
+	// std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector: " << vectorDuration << " ms" << std::endl;
+	std::cout << "Time to process a range of " << _dq.size() << " elements with std::deque: " << dqDuration << " ms" << std::endl;
 }
